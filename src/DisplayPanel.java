@@ -37,7 +37,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public DisplayPanel() {
         highScore = 0;
         lives = 3;
-        pacmanX = 435;
+        pacmanX = 435 - 2;
         pacmanY = 545;
         pacmanDirection = 3;
         pacmanFrameCount = 0;
@@ -139,21 +139,39 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
     private void movePacMan() {
         if(pressedKeys[KeyEvent.VK_A]) {
-            if(pacmanX - 15 >= 0) pacmanX -= 15;
-            pacmanDirection = 2;
+            if(isValidMovement(pacmanX - 5, pacmanY + 15, "grey")){
+                pacmanX -= 5;
+                if(pacmanX < -30) pacmanX = 1050;
+                pacmanDirection = 2;
+            }
         }
         if(pressedKeys[KeyEvent.VK_D]) {
-            if(pacmanX + 15 <= 910) pacmanX += 15;
-            pacmanDirection = 3;
+            if(isValidMovement(pacmanX + 35, pacmanY + 15, "grey")){
+                pacmanX += 5;
+                if(pacmanX > 1050) pacmanX = -30;
+                pacmanDirection = 3;
+            }
         }
         if(pressedKeys[KeyEvent.VK_W]) {
-            if(pacmanY - 15 >= 0) pacmanY -= 15;
-            pacmanDirection = 0;
+            if(isValidMovement(pacmanX + 15, pacmanY - 5, "grey")){
+                pacmanY -= 5;
+                pacmanDirection = 0;
+            }
         }
         if(pressedKeys[KeyEvent.VK_S]) {
-            if(pacmanY + 15 <= 1020) pacmanY += 15;
-            pacmanDirection = 1;
+            if(isValidMovement(pacmanX + 15, pacmanY + 35, "grey")){
+                pacmanY += 5;
+                pacmanDirection = 1;
+            }
         }
+    }
+
+    private boolean isValidMovement(int x, int y, String validColor) {
+        int clr = background.getRGB(x, y);
+        Color color = new Color(clr, true);
+        Color grey = new Color(67, 67, 67); //63
+        if(validColor.equals("grey")) return color.equals(grey);
+        else return false;
     }
 
     private Rectangle pacManRectangle() {
