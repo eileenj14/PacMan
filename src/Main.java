@@ -3,10 +3,10 @@ import javax.swing.JFrame;
 public class Main {
     public static void main(String[] args) {
         // create a JFrame (a window) with a particular text for title bar
-        JFrame frame = new JFrame("Super Mario Game");
+        JFrame frame = new JFrame("Pac-Man");
 
-        // set frame to have 900 width, 983 height
-        frame.setSize(900, 983);
+        // set frame to have 910 width, 1020 height
+        frame.setSize(910, 1020);
 
         // auto-center frame on screen
         frame.setLocationRelativeTo(null);
