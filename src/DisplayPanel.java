@@ -139,39 +139,40 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
     private void movePacMan() {
         if(pressedKeys[KeyEvent.VK_A]) {
-            if(isValidMovement(pacmanX - 5, pacmanY + 15, "grey")){
-                pacmanX -= 5;
-                if(pacmanX < -30) pacmanX = 1050;
+            if(isGreyTile(pacmanX, pacmanY + 15)){
+                pacmanX -= 15;
+                if(pacmanX <= 0) pacmanX = 910 - 60;
                 pacmanDirection = 2;
             }
         }
         if(pressedKeys[KeyEvent.VK_D]) {
-            if(isValidMovement(pacmanX + 35, pacmanY + 15, "grey")){
-                pacmanX += 5;
-                if(pacmanX > 1050) pacmanX = -30;
+            if(isGreyTile(pacmanX + 30, pacmanY + 15)){
+                pacmanX += 15;
+                if(pacmanX > 910 - 45) pacmanX = 0;
                 pacmanDirection = 3;
             }
         }
         if(pressedKeys[KeyEvent.VK_W]) {
-            if(isValidMovement(pacmanX + 15, pacmanY - 5, "grey")){
-                pacmanY -= 5;
+            if(isGreyTile(pacmanX + 15, pacmanY)){
+                pacmanY -= 15;
                 pacmanDirection = 0;
             }
         }
         if(pressedKeys[KeyEvent.VK_S]) {
-            if(isValidMovement(pacmanX + 15, pacmanY + 35, "grey")){
-                pacmanY += 5;
+            if(isGreyTile(pacmanX + 15, pacmanY + 30)){
+                pacmanY += 15;
                 pacmanDirection = 1;
             }
         }
     }
 
-    private boolean isValidMovement(int x, int y, String validColor) {
+    private boolean isGreyTile(int x, int y) {
         int clr = background.getRGB(x, y);
         Color color = new Color(clr, true);
-        Color grey = new Color(67, 67, 67); //63
-        if(validColor.equals("grey")) return color.equals(grey);
-        else return false;
+        boolean r = Math.abs(color.getRed() - 65) <= 5;
+        boolean g = Math.abs(color.getGreen() - 65) <= 5;
+        boolean b = Math.abs(color.getBlue() - 65) <= 5;
+        return r && g && b;
     }
 
     private Rectangle pacManRectangle() {
