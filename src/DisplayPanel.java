@@ -75,6 +75,19 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             energizer = ImageIO.read(new File("src/energizer.png"));
         } catch(IOException e) {}
 
+        for(int x = 70; x <= 830; x += 30) {
+            for(int y = 120; y <= 895; y += 28) {
+                if(isGreyTile(x, y)){
+                    foods.add(new Point(x, y));
+                }
+            }
+        }
+
+        energizers.add(new Point(60 + 2, 165 + 2));
+        energizers.add(new Point(60 + 2, 715 - 2));
+        energizers.add(new Point(810 + 2, 165 + 2));
+        energizers.add(new Point(810 + 2, 715 - 2));
+
         addMouseListener(this);
         addKeyListener(this);
         setFocusable(true);
@@ -89,13 +102,13 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         g.drawImage(background, -2, 0, null);
         g.drawImage(pacman[pacmanFrameCount][pacmanDirection], pacmanX, pacmanY, null);
 
-//        for(Point f : foods) {
-//            g.drawImage(food, f.x, f.y, null);
-//        }
-//
-//        for(Point e : energizers) {
-//            g.drawImage(energizer, e.x, e.y, null);
-//        }
+        for(Point f : foods) {
+            g.drawImage(food, f.x, f.y, null);
+        }
+
+        for(Point e : energizers) {
+            g.drawImage(energizer, e.x, e.y, null);
+        }
 
         g.setFont(new Font("Arial", Font.BOLD, 16));
         g.setColor(Color.WHITE);
@@ -139,39 +152,40 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
     private void movePacMan() {
         if(pressedKeys[KeyEvent.VK_A]) {
-            if(isValidMovement(pacmanX - 5, pacmanY + 15, "grey")){
-                pacmanX -= 5;
-                if(pacmanX < -30) pacmanX = 1050;
+            if(isGreyTile(pacmanX, pacmanY + 15)){
+                pacmanX -= 15;
+                if(pacmanX <= 0) pacmanX = 910 - 60;
                 pacmanDirection = 2;
             }
         }
         if(pressedKeys[KeyEvent.VK_D]) {
-            if(isValidMovement(pacmanX + 35, pacmanY + 15, "grey")){
-                pacmanX += 5;
-                if(pacmanX > 1050) pacmanX = -30;
+            if(isGreyTile(pacmanX + 30, pacmanY + 15)){
+                pacmanX += 15;
+                if(pacmanX > 910 - 45) pacmanX = 0;
                 pacmanDirection = 3;
             }
         }
         if(pressedKeys[KeyEvent.VK_W]) {
-            if(isValidMovement(pacmanX + 15, pacmanY - 5, "grey")){
-                pacmanY -= 5;
+            if(isGreyTile(pacmanX + 15, pacmanY)){
+                pacmanY -= 15;
                 pacmanDirection = 0;
             }
         }
         if(pressedKeys[KeyEvent.VK_S]) {
-            if(isValidMovement(pacmanX + 15, pacmanY + 35, "grey")){
-                pacmanY += 5;
+            if(isGreyTile(pacmanX + 15, pacmanY + 30)){
+                pacmanY += 15;
                 pacmanDirection = 1;
             }
         }
     }
 
-    private boolean isValidMovement(int x, int y, String validColor) {
+    private boolean isGreyTile(int x, int y) {
         int clr = background.getRGB(x, y);
         Color color = new Color(clr, true);
-        Color grey = new Color(67, 67, 67); //63
-        if(validColor.equals("grey")) return color.equals(grey);
-        else return false;
+        boolean r = Math.abs(color.getRed() - 65) <= 5;
+        boolean g = Math.abs(color.getGreen() - 65) <= 5;
+        boolean b = Math.abs(color.getBlue() - 65) <= 5;
+        return r && g && b;
     }
 
     private Rectangle pacManRectangle() {
