@@ -37,8 +37,8 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public DisplayPanel() {
         highScore = 0;
         lives = 3;
-        pacmanX = 435 - 2;
-        pacmanY = 545;
+        pacmanX = 450 - 15;
+        pacmanY = 600 + 1;
         pacmanDirection = 3;
         pacmanFrameCount = 0;
         foods = new ArrayList<>();
@@ -75,18 +75,18 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             energizer = ImageIO.read(new File("src/energizer.png"));
         } catch(IOException e) {}
 
-        for(int x = 70; x <= 830; x += 30) {
-            for(int y = 120; y <= 895; y += 28) {
-                if(isGreyTile(x, y)){
+        for(int x = 70; x <= 825; x += 30) {
+            for(int y = 105; y <= 1000; y += 30) {
+                if(isGreyTile(x, y)) {
                     foods.add(new Point(x, y));
                 }
             }
         }
 
-        energizers.add(new Point(60 + 2, 165 + 2));
-        energizers.add(new Point(60 + 2, 715 - 2));
-        energizers.add(new Point(810 + 2, 165 + 2));
-        energizers.add(new Point(810 + 2, 715 - 2));
+        energizers.add(new Point(62, 182));
+        energizers.add(new Point(62, 785));
+        energizers.add(new Point(812, 182));
+        energizers.add(new Point(812, 785));
 
         addMouseListener(this);
         addKeyListener(this);
@@ -125,7 +125,6 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     @Override
     public void mouseReleased(MouseEvent e) {
         if(e.getButton() == MouseEvent.BUTTON1) {
-            gameStart = !gameStart;
         }
     }
 
@@ -152,27 +151,27 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
     private void movePacMan() {
         if(pressedKeys[KeyEvent.VK_A]) {
-            if(isGreyTile(pacmanX, pacmanY + 15)){
+            if(isGreyTile(pacmanX, pacmanY + 15)) {
                 pacmanX -= 15;
                 if(pacmanX <= 0) pacmanX = 910 - 60;
                 pacmanDirection = 2;
             }
         }
         if(pressedKeys[KeyEvent.VK_D]) {
-            if(isGreyTile(pacmanX + 30, pacmanY + 15)){
+            if(isGreyTile(pacmanX + 35, pacmanY + 15)) {
                 pacmanX += 15;
                 if(pacmanX > 910 - 45) pacmanX = 0;
                 pacmanDirection = 3;
             }
         }
         if(pressedKeys[KeyEvent.VK_W]) {
-            if(isGreyTile(pacmanX + 15, pacmanY)){
+            if(isGreyTile(pacmanX + 15, pacmanY)) {
                 pacmanY -= 15;
                 pacmanDirection = 0;
             }
         }
         if(pressedKeys[KeyEvent.VK_S]) {
-            if(isGreyTile(pacmanX + 15, pacmanY + 30)){
+            if(isGreyTile(pacmanX + 15, pacmanY + 30)) {
                 pacmanY += 15;
                 pacmanDirection = 1;
             }
@@ -182,9 +181,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private boolean isGreyTile(int x, int y) {
         int clr = background.getRGB(x, y);
         Color color = new Color(clr, true);
-        boolean r = Math.abs(color.getRed() - 65) <= 5;
-        boolean g = Math.abs(color.getGreen() - 65) <= 5;
-        boolean b = Math.abs(color.getBlue() - 65) <= 5;
+        boolean r = Math.abs(color.getRed() - 75) <= 10;
+        boolean g = Math.abs(color.getGreen() - 75) <= 10;
+        boolean b = Math.abs(color.getBlue() - 75) <= 10;
         return r && g && b;
     }
 
@@ -195,29 +194,50 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         return rect;
     }
 
-//    private Rectangle foodRectangle(Point point) {
-//        int imageHeight = coin.getHeight();
-//        int imageWidth = coin.getWidth();
-//        Rectangle rect = new Rectangle(point.x, point.y, imageWidth, imageHeight);
-//        return rect;
-//    }
-//
-//    private void checkPacManFoodCollision() {
-//        Rectangle marioRect = marioRectangle();
-//        for(int i = 0; i < food.size(); i++) {
-//            Rectangle coinRect = coinRectangle(food.get(i));
-//            if(marioRect.intersects(coinRect)) {
-//                highScore++;
-//                food.remove(i);
-//                i--;
-//            }
-//        }
-//    }
+    private Rectangle foodRectangle(Point point) {
+        int imageHeight = food.getHeight();
+        int imageWidth = food.getWidth();
+        Rectangle rect = new Rectangle(point.x, point.y, imageWidth, imageHeight);
+        return rect;
+    }
+
+    private Rectangle energizerRectangle(Point point) {
+        int imageHeight = energizer.getHeight();
+        int imageWidth = energizer.getWidth();
+        Rectangle rect = new Rectangle(point.x, point.y, imageWidth, imageHeight);
+        return rect;
+    }
+
+    private void checkPacManFoodCollision() {
+        Rectangle pacmanRect = pacManRectangle();
+        for(int i = 0; i < foods.size(); i++) {
+            Rectangle foodRect = foodRectangle(foods.get(i));
+            if(pacmanRect.intersects(foodRect)) {
+                highScore += 10;
+                foods.remove(i);
+                i--;
+            }
+        }
+    }
+
+    private void checkPacManEnergizerCollision() {
+        Rectangle pacmanRect = pacManRectangle();
+        for(int i = 0; i < energizers.size(); i++) {
+            Rectangle energizerRect = energizerRectangle(energizers.get(i));
+            if(pacmanRect.intersects(energizerRect)) {
+                highScore += 40;
+                energizers.remove(i);
+                i--;
+            }
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         movePacMan();
         pacmanFrameCount = (pacmanFrameCount + 1) % 4;
+        checkPacManFoodCollision();
+        checkPacManEnergizerCollision();
 
         repaint();
     }
