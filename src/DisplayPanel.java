@@ -23,8 +23,21 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private int pacmanY;
     private int pacmanDirection;
     private int pacmanFrameCount;
+    private int blinkyX;
+    private int blinkyY;
+    private int blinkyDirection;
+    private int pinkyX;
+    private int pinkyY;
+    private int pinkyDirection;
+    private int inkyX;
+    private int inkyY;
+    private int inkyDirection;
+    private int clydeX;
+    private int clydeY;
+    private int clydeDirection;
     private BufferedImage background;
     private BufferedImage[][] pacman = new BufferedImage[4][4];
+    private BufferedImage[][] ghosts = new BufferedImage[4][5];
     private BufferedImage food;
     private BufferedImage energizer;
     private ArrayList<Point> foods;
@@ -38,9 +51,21 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         highScore = 0;
         lives = 3;
         pacmanX = 450 - 15;
-        pacmanY = 600 + 1;
+        pacmanY = 600;
         pacmanDirection = 3;
         pacmanFrameCount = 0;
+        blinkyX = 450 - 15;
+        blinkyY = 520;
+        blinkyDirection = 3;
+        pinkyX = 450 - 15;
+        pinkyY = 600;
+        pinkyDirection = 0;
+        inkyX = 450 - 15;
+        inkyY = 600;
+        inkyDirection = 0;
+        clydeX = 450 - 15;
+        clydeY = 600;
+        clydeDirection = 0;
         foods = new ArrayList<>();
         energizers = new ArrayList<>();
         pressedKeys = new boolean[128];
@@ -48,37 +73,65 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         gameOver = false;
         timer = new Timer(150, this);
         try {
-            background = ImageIO.read(new File("src/background.png"));
+            background = ImageIO.read(new File("src/level_sprites/background.png"));
         } catch(IOException e) {}
         try {
-            pacman[0][0] = ImageIO.read(new File("src/pacmanUp1.png"));
-            pacman[0][1] = ImageIO.read(new File("src/pacmanDown1.png"));
-            pacman[0][2] = ImageIO.read(new File("src/pacmanLeft1.png"));
-            pacman[0][3] = ImageIO.read(new File("src/pacmanRight1.png"));
-            pacman[1][0] = ImageIO.read(new File("src/pacmanUp2.png"));
-            pacman[1][1] = ImageIO.read(new File("src/pacmanDown2.png"));
-            pacman[1][2] = ImageIO.read(new File("src/pacmanLeft2.png"));
-            pacman[1][3] = ImageIO.read(new File("src/pacmanRight2.png"));
-            pacman[2][0] = ImageIO.read(new File("src/pacmanUp3.png"));
-            pacman[2][1] = ImageIO.read(new File("src/pacmanDown3.png"));
-            pacman[2][2] = ImageIO.read(new File("src/pacmanLeft3.png"));
-            pacman[2][3] = ImageIO.read(new File("src/pacmanRight3.png"));
-            pacman[3][0] = ImageIO.read(new File("src/pacman4.png"));
-            pacman[3][1] = ImageIO.read(new File("src/pacman4.png"));
-            pacman[3][2] = ImageIO.read(new File("src/pacman4.png"));
-            pacman[3][3] = ImageIO.read(new File("src/pacman4.png"));
+            pacman[0][0] = ImageIO.read(new File("src/character_sprites/pacmanUp1.png"));
+            pacman[0][1] = ImageIO.read(new File("src/character_sprites/pacmanDown1.png"));
+            pacman[0][2] = ImageIO.read(new File("src/character_sprites/pacmanLeft1.png"));
+            pacman[0][3] = ImageIO.read(new File("src/character_sprites/pacmanRight1.png"));
+            pacman[1][0] = ImageIO.read(new File("src/character_sprites/pacmanUp2.png"));
+            pacman[1][1] = ImageIO.read(new File("src/character_sprites/pacmanDown2.png"));
+            pacman[1][2] = ImageIO.read(new File("src/character_sprites/pacmanLeft2.png"));
+            pacman[1][3] = ImageIO.read(new File("src/character_sprites/pacmanRight2.png"));
+            pacman[2][0] = ImageIO.read(new File("src/character_sprites/pacmanUp3.png"));
+            pacman[2][1] = ImageIO.read(new File("src/character_sprites/pacmanDown3.png"));
+            pacman[2][2] = ImageIO.read(new File("src/character_sprites/pacmanLeft3.png"));
+            pacman[2][3] = ImageIO.read(new File("src/character_sprites/pacmanRight3.png"));
+            pacman[3][0] = ImageIO.read(new File("src/character_sprites/pacman4.png"));
+            pacman[3][1] = ImageIO.read(new File("src/character_sprites/pacman4.png"));
+            pacman[3][2] = ImageIO.read(new File("src/character_sprites/pacman4.png"));
+            pacman[3][3] = ImageIO.read(new File("src/character_sprites/pacman4.png"));
         } catch(IOException e) {}
         try {
-            food = ImageIO.read(new File("src/food.png"));
+            ghosts[0][0] = ImageIO.read(new File("src/character_sprites/blinkUp.png"));
+            ghosts[0][1] = ImageIO.read(new File("src/character_sprites/blinkyDown.png"));
+            ghosts[0][2] = ImageIO.read(new File("src/character_sprites/blinkyLeft.png"));
+            ghosts[0][3] = ImageIO.read(new File("src/character_sprites/blinkyRight.png"));
+            ghosts[0][4] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
+            ghosts[1][0] = ImageIO.read(new File("src/character_sprites/pinkyUp.png"));
+            ghosts[1][1] = ImageIO.read(new File("src/character_sprites/pinkyDown.png"));
+            ghosts[1][2] = ImageIO.read(new File("src/character_sprites/pinkyLeft.png"));
+            ghosts[1][3] = ImageIO.read(new File("src/character_sprites/pinkyRight.png"));
+            ghosts[1][4] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
+            ghosts[2][0] = ImageIO.read(new File("src/character_sprites/inkyUp.png"));
+            ghosts[2][1] = ImageIO.read(new File("src/character_sprites/inkyDown.png"));
+            ghosts[2][2] = ImageIO.read(new File("src/character_sprites/inkyLeft.png"));
+            ghosts[2][3] = ImageIO.read(new File("src/character_sprites/inkyRight.png"));
+            ghosts[2][4] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
+            ghosts[3][0] = ImageIO.read(new File("src/character_sprites/clydeUp.png"));
+            ghosts[3][1] = ImageIO.read(new File("src/character_sprites/clydeDown.png"));
+            ghosts[3][2] = ImageIO.read(new File("src/character_sprites/clydeLeft.png"));
+            ghosts[3][3] = ImageIO.read(new File("src/character_sprites/clydeRight.png"));
+            ghosts[3][4] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
         } catch(IOException e) {}
         try {
-            energizer = ImageIO.read(new File("src/energizer.png"));
+            food = ImageIO.read(new File("src/level_sprites/food.png"));
+        } catch(IOException e) {}
+        try {
+            energizer = ImageIO.read(new File("src/level_sprites/energizer.png"));
         } catch(IOException e) {}
 
         for(int x = 70; x <= 825; x += 30) {
             for(int y = 105; y <= 1000; y += 30) {
-                if(isGreyTile(x, y)) {
-                    foods.add(new Point(x, y));
+                if(y < 360 || y > 690) {
+                    if(isGreyTile(x, y)) {
+                        foods.add(new Point(x, y));
+                    }
+                } else {
+                    if(x == 220 || x == 670) {
+                        foods.add(new Point(x, y));
+                    }
                 }
             }
         }
@@ -101,6 +154,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
         g.drawImage(background, -2, 0, null);
         g.drawImage(pacman[pacmanFrameCount][pacmanDirection], pacmanX, pacmanY, null);
+        g.drawImage(ghosts[0][blinkyDirection], blinkyX, blinkyY, null);
+        g.drawImage(ghosts[1][pinkyDirection], pinkyX, pinkyY, null);
+        g.drawImage(ghosts[2][inkyDirection], inkyX, inkyY, null);
+        g.drawImage(ghosts[3][clydeDirection], clydeX, clydeY, null);
 
         for(Point f : foods) {
             g.drawImage(food, f.x, f.y, null);
@@ -153,14 +210,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if(pressedKeys[KeyEvent.VK_A]) {
             if(isGreyTile(pacmanX, pacmanY + 15)) {
                 pacmanX -= 15;
-                if(pacmanX <= 0) pacmanX = 910 - 60;
+                if(pacmanX < 30) pacmanX = 910 - 75;
                 pacmanDirection = 2;
             }
         }
         if(pressedKeys[KeyEvent.VK_D]) {
             if(isGreyTile(pacmanX + 35, pacmanY + 15)) {
                 pacmanX += 15;
-                if(pacmanX > 910 - 45) pacmanX = 0;
+                if(pacmanX > 910 - 60) pacmanX = 30;
                 pacmanDirection = 3;
             }
         }
