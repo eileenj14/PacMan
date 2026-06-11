@@ -25,19 +25,19 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private int pacmanFrameCount;
     private int blinkyX;
     private int blinkyY;
-    private int blinkyDirection;
+    private int blinkyState;
     private int pinkyX;
     private int pinkyY;
-    private int pinkyDirection;
+    private int pinkyState;
     private int inkyX;
     private int inkyY;
-    private int inkyDirection;
+    private int inkyState;
     private int clydeX;
     private int clydeY;
-    private int clydeDirection;
+    private int clydeState;
     private BufferedImage background;
-    private BufferedImage[][] pacman = new BufferedImage[4][4];
-    private BufferedImage[][] ghosts = new BufferedImage[4][5];
+    private BufferedImage[][] pacman = new BufferedImage[3][4];
+    private BufferedImage[][] ghosts = new BufferedImage[4][3];
     private BufferedImage food;
     private BufferedImage energizer;
     private ArrayList<Point> foods;
@@ -55,17 +55,17 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         pacmanDirection = 3;
         pacmanFrameCount = 0;
         blinkyX = 450 - 15;
-        blinkyY = 520;
-        blinkyDirection = 3;
+        blinkyY = 510 - 90;
+        blinkyState = 0;
         pinkyX = 450 - 15;
-        pinkyY = 600;
-        pinkyDirection = 0;
-        inkyX = 450 - 15;
-        inkyY = 600;
-        inkyDirection = 0;
-        clydeX = 450 - 15;
-        clydeY = 600;
-        clydeDirection = 0;
+        pinkyY = 510;
+        pinkyState = 0;
+        inkyX = 450 - 60;
+        inkyY = 510;
+        inkyState = 0;
+        clydeX = 450 + 30;
+        clydeY = 510;
+        clydeState = 0;
         foods = new ArrayList<>();
         energizers = new ArrayList<>();
         pressedKeys = new boolean[128];
@@ -84,41 +84,23 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             pacman[1][1] = ImageIO.read(new File("src/character_sprites/pacmanDown2.png"));
             pacman[1][2] = ImageIO.read(new File("src/character_sprites/pacmanLeft2.png"));
             pacman[1][3] = ImageIO.read(new File("src/character_sprites/pacmanRight2.png"));
-            pacman[2][0] = ImageIO.read(new File("src/character_sprites/pacmanUp3.png"));
-            pacman[2][1] = ImageIO.read(new File("src/character_sprites/pacmanDown3.png"));
-            pacman[2][2] = ImageIO.read(new File("src/character_sprites/pacmanLeft3.png"));
-            pacman[2][3] = ImageIO.read(new File("src/character_sprites/pacmanRight3.png"));
-            pacman[3][0] = ImageIO.read(new File("src/character_sprites/pacman4.png"));
-            pacman[3][1] = ImageIO.read(new File("src/character_sprites/pacman4.png"));
-            pacman[3][2] = ImageIO.read(new File("src/character_sprites/pacman4.png"));
-            pacman[3][3] = ImageIO.read(new File("src/character_sprites/pacman4.png"));
+            pacman[2][0] = ImageIO.read(new File("src/character_sprites/pacman3.png"));
+            pacman[2][1] = ImageIO.read(new File("src/character_sprites/pacman3.png"));
+            pacman[2][2] = ImageIO.read(new File("src/character_sprites/pacman3.png"));
+            pacman[2][3] = ImageIO.read(new File("src/character_sprites/pacman3.png"));
         } catch(IOException e) {}
         try {
-            ghosts[0][0] = ImageIO.read(new File("src/character_sprites/blinkUp.png"));
-            ghosts[0][1] = ImageIO.read(new File("src/character_sprites/blinkyDown.png"));
-            ghosts[0][2] = ImageIO.read(new File("src/character_sprites/blinkyLeft.png"));
-            ghosts[0][3] = ImageIO.read(new File("src/character_sprites/blinkyRight.png"));
-            ghosts[0][4] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
-            ghosts[1][0] = ImageIO.read(new File("src/character_sprites/pinkyUp.png"));
-            ghosts[1][1] = ImageIO.read(new File("src/character_sprites/pinkyDown.png"));
-            ghosts[1][2] = ImageIO.read(new File("src/character_sprites/pinkyLeft.png"));
-            ghosts[1][3] = ImageIO.read(new File("src/character_sprites/pinkyRight.png"));
-            ghosts[1][4] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
-            ghosts[2][0] = ImageIO.read(new File("src/character_sprites/inkyUp.png"));
-            ghosts[2][1] = ImageIO.read(new File("src/character_sprites/inkyDown.png"));
-            ghosts[2][2] = ImageIO.read(new File("src/character_sprites/inkyLeft.png"));
-            ghosts[2][3] = ImageIO.read(new File("src/character_sprites/inkyRight.png"));
-            ghosts[2][4] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
-            ghosts[3][0] = ImageIO.read(new File("src/character_sprites/clydeUp.png"));
-            ghosts[3][1] = ImageIO.read(new File("src/character_sprites/clydeDown.png"));
-            ghosts[3][2] = ImageIO.read(new File("src/character_sprites/clydeLeft.png"));
-            ghosts[3][3] = ImageIO.read(new File("src/character_sprites/clydeRight.png"));
-            ghosts[3][4] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
+            ghosts[0][0] = ImageIO.read(new File("src/character_sprites/blinkyRight.png"));
+            ghosts[0][1] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
+            ghosts[1][0] = ImageIO.read(new File("src/character_sprites/pinkyRight.png"));
+            ghosts[1][1] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
+            ghosts[2][0] = ImageIO.read(new File("src/character_sprites/inkyRight.png"));
+            ghosts[2][1] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
+            ghosts[3][0] = ImageIO.read(new File("src/character_sprites/clydeRight.png"));
+            ghosts[3][1] = ImageIO.read(new File("src/character_sprites/eatenGhost.png"));
         } catch(IOException e) {}
         try {
             food = ImageIO.read(new File("src/level_sprites/food.png"));
-        } catch(IOException e) {}
-        try {
             energizer = ImageIO.read(new File("src/level_sprites/energizer.png"));
         } catch(IOException e) {}
 
@@ -154,10 +136,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
         g.drawImage(background, -2, 0, null);
         g.drawImage(pacman[pacmanFrameCount][pacmanDirection], pacmanX, pacmanY, null);
-        g.drawImage(ghosts[0][blinkyDirection], blinkyX, blinkyY, null);
-        g.drawImage(ghosts[1][pinkyDirection], pinkyX, pinkyY, null);
-        g.drawImage(ghosts[2][inkyDirection], inkyX, inkyY, null);
-        g.drawImage(ghosts[3][clydeDirection], clydeX, clydeY, null);
+        g.drawImage(ghosts[0][blinkyState], blinkyX, blinkyY, null);
+        g.drawImage(ghosts[1][pinkyState], pinkyX, pinkyY, null);
+        g.drawImage(ghosts[2][inkyState], inkyX, inkyY, null);
+        g.drawImage(ghosts[3][clydeState], clydeX, clydeY, null);
 
         for(Point f : foods) {
             g.drawImage(food, f.x, f.y, null);
@@ -207,32 +189,44 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     }
 
     private void movePacMan() {
-        if(pressedKeys[KeyEvent.VK_A]) {
+        if(pressedKeys[KeyEvent.VK_A] || pressedKeys[KeyEvent.VK_LEFT]) {
             if(isGreyTile(pacmanX, pacmanY + 15)) {
                 pacmanX -= 15;
                 if(pacmanX < 30) pacmanX = 910 - 75;
                 pacmanDirection = 2;
             }
         }
-        if(pressedKeys[KeyEvent.VK_D]) {
+        if(pressedKeys[KeyEvent.VK_D] || pressedKeys[KeyEvent.VK_RIGHT]) {
             if(isGreyTile(pacmanX + 35, pacmanY + 15)) {
                 pacmanX += 15;
                 if(pacmanX > 910 - 60) pacmanX = 30;
                 pacmanDirection = 3;
             }
         }
-        if(pressedKeys[KeyEvent.VK_W]) {
+        if(pressedKeys[KeyEvent.VK_W] || pressedKeys[KeyEvent.VK_UP]) {
             if(isGreyTile(pacmanX + 15, pacmanY)) {
                 pacmanY -= 15;
                 pacmanDirection = 0;
             }
         }
-        if(pressedKeys[KeyEvent.VK_S]) {
+        if(pressedKeys[KeyEvent.VK_S] || pressedKeys[KeyEvent.VK_DOWN]) {
             if(isGreyTile(pacmanX + 15, pacmanY + 30)) {
                 pacmanY += 15;
                 pacmanDirection = 1;
             }
         }
+    }
+
+    private void moveGhostsChase() {
+
+    }
+
+    private void moveGhostsScatter() {
+
+    }
+
+    private void moveGhostsFrightened() {
+
     }
 
     private boolean isGreyTile(int x, int y) {
@@ -244,10 +238,47 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         return r && g && b;
     }
 
+    private boolean isNotBlackTile(int x, int y) {
+        int clr = background.getRGB(x, y);
+        Color color = new Color(clr, true);
+        boolean r = !(color.getRed() == 0);
+        boolean g = !(color.getGreen() == 0);
+        boolean b = !(color.getBlue() == 0);
+        return r && g && b;
+    }
+
     private Rectangle pacManRectangle() {
         int imageHeight = pacman[0][0].getHeight();
         int imageWidth = pacman[0][0].getWidth();
         Rectangle rect = new Rectangle(pacmanX, pacmanY, imageWidth, imageHeight);
+        return rect;
+    }
+
+    private Rectangle blinkyRectangle() {
+        int imageHeight = ghosts[0][0].getHeight();
+        int imageWidth = ghosts[0][0].getWidth();
+        Rectangle rect = new Rectangle(blinkyX, blinkyY, imageWidth, imageHeight);
+        return rect;
+    }
+
+    private Rectangle pinkyRectangle() {
+        int imageHeight = ghosts[0][0].getHeight();
+        int imageWidth = ghosts[0][0].getWidth();
+        Rectangle rect = new Rectangle(pinkyX, pinkyY, imageWidth, imageHeight);
+        return rect;
+    }
+
+    private Rectangle inkyRectangle() {
+        int imageHeight = ghosts[0][0].getHeight();
+        int imageWidth = ghosts[0][0].getWidth();
+        Rectangle rect = new Rectangle(inkyX,inkyY, imageWidth, imageHeight);
+        return rect;
+    }
+
+    private Rectangle clydeRectangle() {
+        int imageHeight = ghosts[0][0].getHeight();
+        int imageWidth = ghosts[0][0].getWidth();
+        Rectangle rect = new Rectangle(clydeX, clydeY, imageWidth, imageHeight);
         return rect;
     }
 
@@ -292,7 +323,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     @Override
     public void actionPerformed(ActionEvent e) {
         movePacMan();
-        pacmanFrameCount = (pacmanFrameCount + 1) % 4;
+        pacmanFrameCount = (pacmanFrameCount + 1) % 3;
+
+        moveGhostsScatter();
+
         checkPacManFoodCollision();
         checkPacManEnergizerCollision();
 
