@@ -35,12 +35,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private int inkyY;
     private int inkyPrevDirection;
     private int inkyState;
-    private boolean inkyOutsideSpawn;
     private int clydeX;
     private int clydeY;
     private int clydePrevDirection;
     private int clydeState;
-    private boolean clydeOutsideSpawn;
     private BufferedImage background;
     private BufferedImage[][] pacman = new BufferedImage[3][4];
     private BufferedImage[][] ghosts = new BufferedImage[4][3];
@@ -72,12 +70,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         inkyY = 510;
         inkyPrevDirection = 1;
         inkyState = 0;
-        inkyOutsideSpawn = false;
         clydeX = 450 + 30;
         clydeY = 510;
         clydePrevDirection = 1;
         clydeState = 0;
-        clydeOutsideSpawn = false;
         foods = new ArrayList<>();
         energizers = new ArrayList<>();
         pressedKeys = new boolean[128];
@@ -245,6 +241,69 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if(blinkyX > 910 - 60) blinkyX = 30;
             blinkyPrevDirection = 2;
         }
+
+        if(pacmanDirection == 0) {
+            nextMove = calculateNextMoveChase(pinkyX, pinkyY, pacmanX, pacmanY - 120, pinkyPrevDirection);
+        } else if(pacmanDirection == 1) {
+            nextMove = calculateNextMoveChase(pinkyX, pinkyY, pacmanX, pacmanY + 120, pinkyPrevDirection);
+        } else if(pacmanDirection == 2) {
+            nextMove = calculateNextMoveChase(pinkyX, pinkyY, pacmanX - 120, pacmanY, pinkyPrevDirection);
+        } else if(pacmanDirection == 3) {
+            nextMove = calculateNextMoveChase(pinkyX, pinkyY, pacmanX + 120, pacmanY, pinkyPrevDirection);
+        }
+        if(nextMove == 0) {
+            pinkyY -= 30;
+            pinkyPrevDirection = 1;
+        } else if(nextMove == 1) {
+            pinkyY += 30;
+            pinkyPrevDirection = 0;
+        } else if(nextMove == 2) {
+            pinkyX -= 30;
+            if(pinkyX < 30) pinkyX = 910 - 75;
+            pinkyPrevDirection = 3;
+        } else if(nextMove == 3) {
+            pinkyX += 30;
+            if(pinkyX > 910 - 60) pinkyX = 30;
+            pinkyPrevDirection = 2;
+        }
+
+        if(pacmanDirection == 0) {
+            nextMove = calculateNextMoveChase(inkyX, inkyY, calculateInkyTargetX(0), calculateInkyTargetY(-60), inkyPrevDirection);
+        } else if(pacmanDirection == 1) {
+            nextMove = calculateNextMoveChase(inkyX, inkyY, calculateInkyTargetX(0), calculateInkyTargetY(60), inkyPrevDirection);
+        } else if(pacmanDirection == 2) {
+            nextMove = calculateNextMoveChase(inkyX, inkyY, calculateInkyTargetX(-60), calculateInkyTargetY(0), inkyPrevDirection);
+        } else if(pacmanDirection == 3) {
+            nextMove = calculateNextMoveChase(inkyX, inkyY, calculateInkyTargetX(60), calculateInkyTargetY(0), inkyPrevDirection);
+        }
+        if(nextMove == 0) {
+            inkyY -= 30;
+            inkyPrevDirection = 1;
+        } else if(nextMove == 1) {
+            inkyY += 30;
+            inkyPrevDirection = 0;
+        } else if(nextMove == 2) {
+            inkyX -= 30;
+            if(inkyX < 30) inkyX = 910 - 75;
+            inkyPrevDirection = 3;
+        } else if(nextMove == 3) {
+            inkyX += 30;
+            if(inkyX > 910 - 60) inkyX = 30;
+            inkyPrevDirection = 2;
+        }
+    }
+
+    private int calculateInkyTargetX(int offset) {
+        int differenceX = Math.abs(blinkyX - (pacmanX + offset));
+        if(blinkyX < pacmanX + offset) {
+            return
+        } else {
+
+        }
+    }
+
+    private int calculateInkyTargetY(int offset) {
+
     }
 
     private void moveGhostsScatter() {
@@ -282,7 +341,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             pinkyPrevDirection = 2;
         }
 
-        if(counter > 30) nextMove = calculateNextMoveScatter(inkyX, inkyY, 900 - 30, 1082, inkyPrevDirection);
+        if(counter > 21) nextMove = calculateNextMoveScatter(inkyX, inkyY, 900 - 30, 1082, inkyPrevDirection);
         else nextMove = calculateNextMoveScatter(inkyX, inkyY, 900 - 30, 0, inkyPrevDirection);
         if(nextMove == 0) {
             inkyY -= 30;
@@ -300,7 +359,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             inkyPrevDirection = 2;
         }
 
-        if(counter > 30) nextMove = calculateNextMoveScatter(clydeX, clydeY, 0, 1082, clydePrevDirection);
+        if(counter > 18) nextMove = calculateNextMoveScatter(clydeX, clydeY, 0, 1082, clydePrevDirection);
         else nextMove = calculateNextMoveScatter(clydeX, clydeY, 0, 0, clydePrevDirection);
         if(nextMove == 0) {
             clydeY -= 30;
@@ -504,7 +563,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(gameState != 0){
-//            counter += 3;
+            counter += 3;
 //            if(gameState == 1 && counter == 60) {
 //                gameState = 2;
 //                counter = 0;
@@ -523,7 +582,8 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 //                moveGhostsChase();
 //            }
 
-            moveGhostsChase();
+            if(counter < 30) moveGhostsScatter();
+            else moveGhostsChase();
 
             checkPacManFoodCollision();
             checkPacManEnergizerCollision();
