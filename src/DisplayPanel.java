@@ -1,3 +1,5 @@
+import org.w3c.dom.css.Rect;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -291,19 +293,27 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if(inkyX > 910 - 60) inkyX = 30;
             inkyPrevDirection = 2;
         }
-    }
 
-    private int calculateInkyTargetX(int offset) {
-        int differenceX = Math.abs(blinkyX - (pacmanX + offset));
-        if(blinkyX < pacmanX + offset) {
-            return
+        if(Math.sqrt(Math.pow(clydeX - pacmanX, 2) + Math.pow(clydeY - pacmanY, 2)) > 240) {
+            nextMove = calculateNextMoveChase(clydeX, clydeY, pacmanX, pacmanY, clydePrevDirection);
         } else {
-
+            nextMove = calculateNextMoveScatter(clydeX, clydeY, 0, 1082, clydePrevDirection);
         }
-    }
-
-    private int calculateInkyTargetY(int offset) {
-
+        if(nextMove == 0) {
+            clydeY -= 30;
+            clydePrevDirection = 1;
+        } else if(nextMove == 1) {
+            clydeY += 30;
+            clydePrevDirection = 0;
+        } else if(nextMove == 2) {
+            clydeX -= 30;
+            if(clydeX < 30) clydeX = 910 - 75;
+            clydePrevDirection = 3;
+        } else if(nextMove == 3) {
+            clydeX += 30;
+            if(clydeX > 910 - 60) clydeX = 30;
+            clydePrevDirection = 2;
+        }
     }
 
     private void moveGhostsScatter() {
@@ -378,7 +388,75 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         }
     }
 
-    private void moveGhostsFrightened() {}
+    private void moveGhostsFrightened() {
+        int nextMove = calculateNextMoveFrightened(blinkyX, blinkyY, blinkyPrevDirection);
+        if(nextMove == 0) {
+            blinkyY -= 30;
+            blinkyPrevDirection = 1;
+        } else if(nextMove == 1) {
+            blinkyY += 30;
+            blinkyPrevDirection = 0;
+        } else if(nextMove == 2) {
+            blinkyX -= 30;
+            if(blinkyX < 30) blinkyX = 910 - 75;
+            blinkyPrevDirection = 3;
+        } else if(nextMove == 3) {
+            blinkyX += 30;
+            if(blinkyX > 910 - 60) blinkyX = 30;
+            blinkyPrevDirection = 2;
+        }
+
+        nextMove = calculateNextMoveFrightened(pinkyX, pinkyY, pinkyPrevDirection);
+        if(nextMove == 0) {
+            pinkyY -= 30;
+            pinkyPrevDirection = 1;
+        } else if(nextMove == 1) {
+            pinkyY += 30;
+            pinkyPrevDirection = 0;
+        } else if(nextMove == 2) {
+            pinkyX -= 30;
+            if(pinkyX < 30) pinkyX = 910 - 75;
+            pinkyPrevDirection = 3;
+        } else if(nextMove == 3) {
+            pinkyX += 30;
+            if(pinkyX > 910 - 60) pinkyX = 30;
+            pinkyPrevDirection = 2;
+        }
+
+        nextMove = calculateNextMoveFrightened(inkyX, inkyY, inkyPrevDirection);
+        if(nextMove == 0) {
+            inkyY -= 30;
+            inkyPrevDirection = 1;
+        } else if(nextMove == 1) {
+            inkyY += 30;
+            inkyPrevDirection = 0;
+        } else if(nextMove == 2) {
+            inkyX -= 30;
+            if(inkyX < 30) inkyX = 910 - 75;
+            inkyPrevDirection = 3;
+        } else if(nextMove == 3) {
+            inkyX += 30;
+            if(inkyX > 910 - 60) inkyX = 30;
+            inkyPrevDirection = 2;
+        }
+
+        nextMove = calculateNextMoveFrightened(clydeX, clydeY, clydePrevDirection);
+        if(nextMove == 0) {
+            clydeY -= 30;
+            clydePrevDirection = 1;
+        } else if(nextMove == 1) {
+            clydeY += 30;
+            clydePrevDirection = 0;
+        } else if(nextMove == 2) {
+            clydeX -= 30;
+            if(clydeX < 30) clydeX = 910 - 75;
+            clydePrevDirection = 3;
+        } else if(nextMove == 3) {
+            clydeX += 30;
+            if(clydeX > 910 - 60) clydeX = 30;
+            clydePrevDirection = 2;
+        }
+    }
 
     private int calculateNextMoveChase(int currX, int currY, int targetX, int targetY, int prevDirection) {
         int[] distances = new int[4];
@@ -411,6 +489,24 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             }
         }
         return minIdx;
+    }
+
+    private int calculateInkyTargetX(int offset) {
+        int differenceX = Math.abs(blinkyX - (pacmanX + offset));
+        if(blinkyX < pacmanX) {
+            return (pacmanX + offset) + differenceX;
+        } else {
+            return (pacmanX + offset) - differenceX;
+        }
+    }
+
+    private int calculateInkyTargetY(int offset) {
+        int differenceY = Math.abs(blinkyY - (pacmanY + offset));
+        if(blinkyY < pacmanY) {
+            return (pacmanY + offset) + differenceY;
+        } else {
+            return (pacmanY + offset) - differenceY;
+        }
     }
 
     private int calculateNextMoveScatter(int currX, int currY, int targetX, int targetY, int prevDirection) {
@@ -485,15 +581,6 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         return r && g && b;
     }
 
-    private boolean isPinkTile(int x, int y) {
-        int clr = background.getRGB(x, y);
-        Color color = new Color(clr, true);
-        boolean r = color.getRed() == 194;
-        boolean g = color.getGreen() == 123;
-        boolean b = color.getBlue() == 160;
-        return r && g && b;
-    }
-
     private Rectangle pacManRectangle() {
         int imageHeight = pacman[0][0].getHeight();
         int imageWidth = pacman[0][0].getWidth();
@@ -536,6 +623,24 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         return new Rectangle(point.x, point.y, imageWidth, imageHeight);
     }
 
+    private boolean checkPacmanGhostsCollisionNormal() {
+        Rectangle pacmanRect = pacManRectangle();
+        Rectangle blinkyRect = blinkyRectangle();
+        Rectangle pinkyRect = pinkyRectangle();
+        Rectangle inkyRect = inkyRectangle();
+        Rectangle clydeRect = clydeRectangle();
+        return pacmanRect.intersects(blinkyRect) || pacmanRect.intersects(pinkyRect)
+                || pacmanRect.intersects(inkyRect) || pacmanRect.intersects(clydeRect);
+    }
+
+    private void checkPacmanBlinkyCollisionFrightened() {}
+
+    private void checkPacmanPinkyCollisionFrightened() {}
+
+    private void checkPacmanInkyCollisionFrightened() {}
+
+    private void checkPacmanClydeCollisionFrightened() {}
+
     private void checkPacManFoodCollision() {
         Rectangle pacmanRect = pacManRectangle();
         for(int i = 0; i < foods.size(); i++) {
@@ -555,6 +660,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if(pacmanRect.intersects(energizerRect)) {
                 highScore += 40;
                 energizers.remove(i);
+                gameState = 3;
                 i--;
             }
         }
@@ -562,31 +668,60 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(gameState != 0){
+        if(gameState != 0) {
             counter += 3;
-//            if(gameState == 1 && counter == 60) {
-//                gameState = 2;
-//                counter = 0;
-//            }
-//            if(gameState == 2 && counter == 210) {
-//                gameState = 1;
-//                counter = 0;
-//            }
+
+            if(gameState == 1 && counter == 60) {
+                gameState = 2;
+                counter = 0;
+            }
+            if(gameState == 2 && counter == 210) {
+                gameState = 1;
+                counter = 0;
+            }
 
             movePacMan();
             pacmanFrameCount = (pacmanFrameCount + 1) % 3;
 
-//            if(gameState == 1) {
-//                moveGhostsScatter();
-//            } else if(gameState == 2) {
-//                moveGhostsChase();
-//            }
+            if(gameState == 1) {
+                moveGhostsScatter();
+            } else if(gameState == 2) {
+                moveGhostsChase();
+            }
 
-            if(counter < 30) moveGhostsScatter();
-            else moveGhostsChase();
+            if(checkPacmanGhostsCollisionNormal()) {
+                gameState = 0;
+                counter = 0;
+                lives--;
+            }
 
             checkPacManFoodCollision();
             checkPacManEnergizerCollision();
+
+            if(lives == 0 || (foods.isEmpty() && energizers.isEmpty())) {
+                gameState = 4;
+            }
+        } else {
+            pacmanX = 450 - 30;
+            pacmanY = 600;
+            pacmanDirection = 3;
+            pacmanFrameCount = 0;
+            blinkyX = 450 - 30;
+            blinkyY = 510 - 90;
+            blinkyPrevDirection = 1;
+            blinkyState = 0;
+            pinkyX = 450 - 30;
+            pinkyY = 510;
+            pinkyPrevDirection = 1;
+            pinkyState = 0;
+            inkyX = 450 - 90;
+            inkyY = 510;
+            inkyPrevDirection = 1;
+            inkyState = 0;
+            clydeX = 450 + 30;
+            clydeY = 510;
+            clydePrevDirection = 1;
+            clydeState = 0;
         }
 
         repaint();
