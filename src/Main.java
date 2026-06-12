@@ -11,8 +11,7 @@ public class Main {
         // auto-center frame on screen
         frame.setLocationRelativeTo(null);
 
-        // apply setting so that clicking X in top right of window will close window and end
-        // program
+        // apply setting so that clicking X in top right of window will close window and end program
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // create a DisplayPanel object
