@@ -131,18 +131,18 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
         if(gameState == 0) {
             g.setColor(Color.YELLOW);
-            g.drawString("Hold down SPACE to start / resume the game!", 510, 60);
+            g.drawString("Hold down SPACE to start / resume the game!", 420, 60);
         } else if(gameState == 1) {
-            g.drawString("Ghosts are scattering! Don't get caught!", 510, 60);
+            g.drawString("Ghosts are scattering! Don't get caught!", 420, 60);
         } else if(gameState == 2) {
-            g.drawString("Ghosts are chasing! Don't get caught!", 510, 60);
+            g.drawString("Ghosts are chasing! Don't get caught!", 420, 60);
         } else if(gameState == 3) {
             g.setColor(Color.BLUE);
-            g.drawString("Ghosts are frightened! Eat the ghosts!", 510, 60);
+            g.drawString("Ghosts are frightened! Eat the ghosts!", 420, 60);
         } else if(gameState == 4) {
             g.setColor(Color.YELLOW);
-            if(lives <= 0) g.drawString("You lost! Better luck next time! :(", 510, 60);
-            else g.drawString("You win! :)", 510, 60);
+            if(lives <= 0) g.drawString("You lost! Better luck next time! :(", 420, 60);
+            else g.drawString("You won! You got a high score of " + highScore + " with " + lives  + " lives left! :)", 420, 60);
 
             timer.stop();
         }
