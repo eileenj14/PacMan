@@ -251,7 +251,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if(Math.sqrt(Math.pow(clydeX - pacmanX, 2) + Math.pow(clydeY - pacmanY, 2)) > 240) {
                 nextMove = calculateNextMoveIsNotGrey(clydeX, clydeY, pacmanX, pacmanY, clydePrevDirection);
             } else {
-                nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 0, 1082, clydePrevDirection);
+                nextMove = calculateNextMoveIsNotGrey(clydeX, clydeY, 0, 1082, clydePrevDirection);
             }
         } else {
             nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 480, 510, clydePrevDirection);
@@ -265,7 +265,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if(isInsideSpawn(blinkyX, blinkyY)) {
                 nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 420, 420, blinkyPrevDirection);
             } else {
-                nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 870, 0, blinkyPrevDirection);
+                nextMove = calculateNextMoveIsNotGrey(blinkyX, blinkyY, 870, 0, blinkyPrevDirection);
             }
         } else {
             nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 390, 510, blinkyPrevDirection);
@@ -276,7 +276,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if(isInsideSpawn(pinkyX, pinkyY)) {
                 nextMove = calculateNextMoveIsBlack(pinkyX, pinkyY, 420, 420, pinkyPrevDirection);
             } else {
-                nextMove = calculateNextMoveIsBlack(pinkyX, pinkyY, 0, 0, pinkyPrevDirection);
+                nextMove = calculateNextMoveIsNotGrey(pinkyX, pinkyY, 0, 0, pinkyPrevDirection);
             }
         } else {
             nextMove = calculateNextMoveIsBlack(pinkyX, pinkyY, 420, 510, pinkyPrevDirection);
@@ -287,7 +287,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if(isInsideSpawn(inkyX, inkyY)) {
                 nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 420, 420, inkyPrevDirection);
             } else {
-                nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 870, 1082, inkyPrevDirection);
+                nextMove = calculateNextMoveIsNotGrey(inkyX, inkyY, 870, 1082, inkyPrevDirection);
             }
         } else {
             nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 450, 510, inkyPrevDirection);
@@ -298,7 +298,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if(isInsideSpawn(clydeX, clydeY)) {
                 nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 420, 420, clydePrevDirection);
             } else {
-                nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 0, 1082, clydePrevDirection);
+                nextMove = calculateNextMoveIsNotGrey(clydeX, clydeY, 0, 1082, clydePrevDirection);
             }
         } else {
             nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 480, 510, clydePrevDirection);
