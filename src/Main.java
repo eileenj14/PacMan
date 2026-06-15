@@ -5,8 +5,8 @@ public class Main {
         // create a JFrame (a window) with a particular text for title bar
         JFrame frame = new JFrame("Pac-Man");
 
-        // set frame to have 900 width, 1082 height
-        frame.setSize(900, 1082);
+        // set frame to have 915 width, 1080 height
+        frame.setSize(915, 1080);
 
         // auto-center frame on screen
         frame.setLocationRelativeTo(null);

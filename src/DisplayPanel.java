@@ -114,6 +114,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         super.paintComponent(g);
 
         g.drawImage(background, 0, 0, null);
+
         for(Point f : foods) g.drawImage(food, f.x, f.y, null);
         for(Point e : energizers) g.drawImage(energizer, e.x, e.y, null);
 
@@ -191,74 +192,116 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         } else if(pressedKeys[KeyEvent.VK_A] || pressedKeys[KeyEvent.VK_LEFT]) {
             if(isGreyTile(pacmanX - 15, pacmanY + 15)) {
                 pacmanX -= 30;
-                if(pacmanX < 30) pacmanX = 910 - 75;
+                if(pacmanX < 30) pacmanX = 840;
                 pacmanDirection = 2;
             }
         } else if(pressedKeys[KeyEvent.VK_D] || pressedKeys[KeyEvent.VK_RIGHT]) {
             if(isGreyTile(pacmanX + 45, pacmanY + 15)) {
                 pacmanX += 30;
-                if(pacmanX > 910 - 60) pacmanX = 30;
+                if(pacmanX > 840) pacmanX = 30;
                 pacmanDirection = 3;
             }
         }
     }
 
     private void moveGhostsChase() {
-        int nextMove = calculateNextMoveIsNotGrey(blinkyX, blinkyY, pacmanX, pacmanY, blinkyPrevDirection);
+        int nextMove;
+        if(blinkyState == 0) {
+            nextMove = calculateNextMoveIsNotGrey(blinkyX, blinkyY, pacmanX, pacmanY, blinkyPrevDirection);
+        } else {
+            nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 390, 510, blinkyPrevDirection);
+        }
         moveBlinky(nextMove);
 
-        if(pacmanDirection == 0) {
-            nextMove = calculateNextMoveIsNotGrey(pinkyX, pinkyY, pacmanX, pacmanY - 120, pinkyPrevDirection);
-        } else if(pacmanDirection == 1) {
-            nextMove = calculateNextMoveIsNotGrey(pinkyX, pinkyY, pacmanX, pacmanY + 120, pinkyPrevDirection);
-        } else if(pacmanDirection == 2) {
-            nextMove = calculateNextMoveIsNotGrey(pinkyX, pinkyY, pacmanX - 120, pacmanY, pinkyPrevDirection);
-        } else if(pacmanDirection == 3) {
-            nextMove = calculateNextMoveIsNotGrey(pinkyX, pinkyY, pacmanX + 120, pacmanY, pinkyPrevDirection);
+        if(pinkyState == 0) {
+            if(pacmanDirection == 0) {
+                nextMove = calculateNextMoveIsNotGrey(pinkyX, pinkyY, pacmanX, pacmanY - 120, pinkyPrevDirection);
+            } else if(pacmanDirection == 1) {
+                nextMove = calculateNextMoveIsNotGrey(pinkyX, pinkyY, pacmanX, pacmanY + 120, pinkyPrevDirection);
+            } else if(pacmanDirection == 2) {
+                nextMove = calculateNextMoveIsNotGrey(pinkyX, pinkyY, pacmanX - 120, pacmanY, pinkyPrevDirection);
+            } else if(pacmanDirection == 3) {
+                nextMove = calculateNextMoveIsNotGrey(pinkyX, pinkyY, pacmanX + 120, pacmanY, pinkyPrevDirection);
+            }
+        } else {
+            nextMove = calculateNextMoveIsBlack(pinkyX, pinkyY, 420, 510, pinkyPrevDirection);
         }
         movePinky(nextMove);
 
-        if(pacmanDirection == 0) {
-            nextMove = calculateNextMoveIsNotGrey(inkyX, inkyY,
-                       calculateInkyChaseTargetX(0), calculateInkyChaseTargetY(-60), inkyPrevDirection);
-        } else if(pacmanDirection == 1) {
-            nextMove = calculateNextMoveIsNotGrey(inkyX, inkyY,
-                       calculateInkyChaseTargetX(0), calculateInkyChaseTargetY(60), inkyPrevDirection);
-        } else if(pacmanDirection == 2) {
-            nextMove = calculateNextMoveIsNotGrey(inkyX, inkyY,
-                       calculateInkyChaseTargetX(-60), calculateInkyChaseTargetY(0), inkyPrevDirection);
-        } else if(pacmanDirection == 3) {
-            nextMove = calculateNextMoveIsNotGrey(inkyX, inkyY,
-                       calculateInkyChaseTargetX(60), calculateInkyChaseTargetY(0), inkyPrevDirection);
+        if(inkyState == 0) {
+            if(pacmanDirection == 0) {
+                nextMove = calculateNextMoveIsNotGrey(inkyX, inkyY,
+                        calculateInkyChaseTargetX(0), calculateInkyChaseTargetY(-60), inkyPrevDirection);
+            } else if(pacmanDirection == 1) {
+                nextMove = calculateNextMoveIsNotGrey(inkyX, inkyY,
+                        calculateInkyChaseTargetX(0), calculateInkyChaseTargetY(60), inkyPrevDirection);
+            } else if(pacmanDirection == 2) {
+                nextMove = calculateNextMoveIsNotGrey(inkyX, inkyY,
+                        calculateInkyChaseTargetX(-60), calculateInkyChaseTargetY(0), inkyPrevDirection);
+            } else if(pacmanDirection == 3) {
+                nextMove = calculateNextMoveIsNotGrey(inkyX, inkyY,
+                        calculateInkyChaseTargetX(60), calculateInkyChaseTargetY(0), inkyPrevDirection);
+            }
+        } else {
+            nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 450, 510, inkyPrevDirection);
         }
         moveInky(nextMove);
 
-        if(Math.sqrt(Math.pow(clydeX - pacmanX, 2) + Math.pow(clydeY - pacmanY, 2)) > 240) {
-            nextMove = calculateNextMoveIsNotGrey(clydeX, clydeY, pacmanX, pacmanY, clydePrevDirection);
+        if(clydeState == 0) {
+            if(Math.sqrt(Math.pow(clydeX - pacmanX, 2) + Math.pow(clydeY - pacmanY, 2)) > 240) {
+                nextMove = calculateNextMoveIsNotGrey(clydeX, clydeY, pacmanX, pacmanY, clydePrevDirection);
+            } else {
+                nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 0, 1082, clydePrevDirection);
+            }
         } else {
-            nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 0, 1082, clydePrevDirection);
+            nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 480, 510, clydePrevDirection);
         }
         moveClyde(nextMove);
     }
 
     private void moveGhostsScatter() {
-        int nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 870, 0, blinkyPrevDirection);
+        int nextMove;
+        if(blinkyState == 0) {
+            if(isInsideSpawn(blinkyX, blinkyY)) {
+                nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 420, 420, blinkyPrevDirection);
+            } else {
+                nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 870, 0, blinkyPrevDirection);
+            }
+        } else {
+            nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 390, 510, blinkyPrevDirection);
+        }
         moveBlinky(nextMove);
 
-        nextMove = calculateNextMoveIsBlack(pinkyX, pinkyY, 0, 0, pinkyPrevDirection);
+        if(pinkyState == 0) {
+            if(isInsideSpawn(pinkyX, pinkyY)) {
+                nextMove = calculateNextMoveIsBlack(pinkyX, pinkyY, 420, 420, pinkyPrevDirection);
+            } else {
+                nextMove = calculateNextMoveIsBlack(pinkyX, pinkyY, 0, 0, pinkyPrevDirection);
+            }
+        } else {
+            nextMove = calculateNextMoveIsBlack(pinkyX, pinkyY, 420, 510, pinkyPrevDirection);
+        }
         movePinky(nextMove);
 
-        if(count > 9) {
-            nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 870, 1082, inkyPrevDirection);
+        if(inkyState == 0) {
+            if(isInsideSpawn(inkyX, inkyY)) {
+                nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 420, 420, inkyPrevDirection);
+            } else {
+                nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 870, 1082, inkyPrevDirection);
+            }
         } else {
-            nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 870, 0, inkyPrevDirection);
+            nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 450, 510, inkyPrevDirection);
         }
         moveInky(nextMove);
 
-        if(count > 18) {
-            nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 0, 1082, clydePrevDirection);
+        if(clydeState == 0) {
+            if(isInsideSpawn(clydeX, clydeY)) {
+                nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 420, 420, clydePrevDirection);
+            } else {
+                nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 0, 1082, clydePrevDirection);
+            }
         } else {
-            nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 0, 0, clydePrevDirection);
+            nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 480, 510, clydePrevDirection);
         }
         moveClyde(nextMove);
     }
@@ -268,7 +311,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if(blinkyState == 0) {
             nextMove = calculateNextMoveIsNotGreyRandom(blinkyX, blinkyY, blinkyPrevDirection);
         } else {
-            nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 420, 510, blinkyPrevDirection);
+            nextMove = calculateNextMoveIsBlack(blinkyX, blinkyY, 390, 510, blinkyPrevDirection);
         }
         moveBlinky(nextMove);
 
@@ -282,14 +325,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if(inkyState == 0) {
             nextMove = calculateNextMoveIsNotGreyRandom(inkyX, inkyY, inkyPrevDirection);
         } else {
-            nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 420, 510, inkyPrevDirection);
+            nextMove = calculateNextMoveIsBlack(inkyX, inkyY, 450, 510, inkyPrevDirection);
         }
         moveInky(nextMove);
 
         if(clydeState == 0) {
             nextMove = calculateNextMoveIsNotGreyRandom(clydeX, clydeY, clydePrevDirection);
         } else {
-            nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 420, 510, clydePrevDirection);
+            nextMove = calculateNextMoveIsBlack(clydeX, clydeY, 480, 510, clydePrevDirection);
         }
         moveClyde(nextMove);
     }
@@ -303,11 +346,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             blinkyPrevDirection = 0;
         } else if(nextMove == 2) {
             blinkyX -= 30;
-            if(blinkyX < 30) blinkyX = 910 - 75;
+            if(blinkyX < 30) blinkyX = 840;
             blinkyPrevDirection = 3;
         } else if(nextMove == 3) {
             blinkyX += 30;
-            if(blinkyX > 910 - 60) blinkyX = 30;
+            if(blinkyX > 840) blinkyX = 30;
             blinkyPrevDirection = 2;
         }
     }
@@ -321,11 +364,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             pinkyPrevDirection = 0;
         } else if(nextMove == 2) {
             pinkyX -= 30;
-            if(pinkyX < 30) pinkyX = 910 - 75;
+            if(pinkyX < 30) pinkyX = 840;
             pinkyPrevDirection = 3;
         } else if(nextMove == 3) {
             pinkyX += 30;
-            if(pinkyX > 910 - 60) pinkyX = 30;
+            if(pinkyX > 840) pinkyX = 30;
             pinkyPrevDirection = 2;
         }
     }
@@ -339,11 +382,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             inkyPrevDirection = 0;
         } else if(nextMove == 2) {
             inkyX -= 30;
-            if(inkyX < 30) inkyX = 910 - 75;
+            if(inkyX < 30) inkyX = 840;
             inkyPrevDirection = 3;
         } else if(nextMove == 3) {
             inkyX += 30;
-            if(inkyX > 910 - 60) inkyX = 30;
+            if(inkyX > 840) inkyX = 30;
             inkyPrevDirection = 2;
         }
     }
@@ -357,11 +400,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             clydePrevDirection = 0;
         } else if(nextMove == 2) {
             clydeX -= 30;
-            if(clydeX < 30) clydeX = 910 - 75;
+            if(clydeX < 30) clydeX = 840;
             clydePrevDirection = 3;
         } else if(nextMove == 3) {
             clydeX += 30;
-            if(clydeX > 910 - 60) clydeX = 30;
+            if(clydeX > 840) clydeX = 30;
             clydePrevDirection = 2;
         }
     }
@@ -482,6 +525,12 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         return r && g && b;
     }
 
+    private boolean isInsideSpawn(int currX, int currY) {
+        boolean x = currX >= 390 - 60 && currX <= 480 + 60;
+        boolean y = currY >= 510 - 60 && currY <= 510 + 60;
+        return x && y;
+    }
+
     private Rectangle pacManRectangle() {
         int imageHeight = pacman[0][0].getHeight();
         int imageWidth = pacman[0][0].getWidth();
@@ -530,7 +579,8 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         Rectangle pinkyRect = pinkyRectangle();
         Rectangle inkyRect = inkyRectangle();
         Rectangle clydeRect = clydeRectangle();
-        if(pacmanRect.intersects(blinkyRect) || pacmanRect.intersects(pinkyRect) || pacmanRect.intersects(inkyRect) || pacmanRect.intersects(clydeRect)) {
+        if((pacmanRect.intersects(blinkyRect) && blinkyState == 0) || (pacmanRect.intersects(pinkyRect) && pinkyState == 0) ||
+                (pacmanRect.intersects(inkyRect) && inkyState == 0) || (pacmanRect.intersects(clydeRect)) && clydeState == 0) {
             gameState = 0;
             count = 0;
             lives--;
@@ -543,22 +593,22 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         Rectangle pinkyRect = pinkyRectangle();
         Rectangle inkyRect = inkyRectangle();
         Rectangle clydeRect = clydeRectangle();
-        if(pacmanRect.intersects(blinkyRect)) {
+        if(pacmanRect.intersects(blinkyRect) && blinkyState == 0) {
             ghostsEatenCount++;
             highScore += (int) (Math.pow(2, ghostsEatenCount) * 100);
             blinkyState = 1;
         }
-        if(pacmanRect.intersects(pinkyRect)) {
+        if(pacmanRect.intersects(pinkyRect) && pinkyState == 0) {
             ghostsEatenCount++;
             highScore += (int) (Math.pow(2, ghostsEatenCount) * 100);
             pinkyState = 1;
         }
-        if(pacmanRect.intersects(inkyRect)) {
+        if(pacmanRect.intersects(inkyRect) && inkyState == 0) {
             ghostsEatenCount++;
             highScore += (int) (Math.pow(2, ghostsEatenCount) * 100);
             inkyState = 1;
         }
-        if(pacmanRect.intersects(clydeRect)) {
+        if(pacmanRect.intersects(clydeRect) && clydeState == 0) {
             ghostsEatenCount++;
             highScore += (int) (Math.pow(2, ghostsEatenCount) * 100);
             clydeState = 1;
@@ -631,10 +681,15 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             pacmanFrameCount = (pacmanFrameCount + 1) % 3;
             moveGhostsFrightened();
 
+            if(isInsideSpawn(blinkyX, blinkyY)) blinkyState = 0;
+            if(isInsideSpawn(pinkyX, pinkyY)) pinkyState = 0;
+            if(isInsideSpawn(inkyX, inkyY)) inkyState = 0;
+            if(isInsideSpawn(clydeX, clydeY)) clydeState = 0;
+
             checkPacmanGhostsCollisionFrightened();
             checkPacManFoodCollision();
             checkPacManEnergizerCollision();
-        } else {
+        } else if(gameState != 4) {
             count += 3;
 
             if(gameState == 1 && count == 60) {
@@ -650,6 +705,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             pacmanFrameCount = (pacmanFrameCount + 1) % 3;
             if(gameState == 1) moveGhostsScatter();
             else moveGhostsChase();
+
+            if(isInsideSpawn(blinkyX, blinkyY)) blinkyState = 0;
+            if(isInsideSpawn(pinkyX, pinkyY)) pinkyState = 0;
+            if(isInsideSpawn(inkyX, inkyY)) inkyState = 0;
+            if(isInsideSpawn(clydeX, clydeY)) clydeState = 0;
 
             checkPacmanGhostsCollision();
             checkPacManFoodCollision();
