@@ -141,10 +141,8 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             g.drawString("Ghosts are frightened! Eat the ghosts!", 420, 60);
         } else if(gameState == 4) {
             g.setColor(Color.YELLOW);
-            if(lives <= 0) g.drawString("You lost! Better luck next time! :(", 420, 60);
+            if(lives <= 0) g.drawString("You lost! Hold down R to restart the game! :(", 420, 60);
             else g.drawString("You won! You got a high score of " + highScore + " with " + lives  + " lives left! :)", 420, 60);
-
-            timer.stop();
         }
     }
 
@@ -644,6 +642,33 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(lives <= 0 || (foods.isEmpty() && energizers.isEmpty())) gameState = 4;
+
+        if(gameState == 4 && pressedKeys[KeyEvent.VK_R]) {
+            gameState = 0;
+            count = 0;
+            ghostsEatenCount = 0;
+
+            highScore = 0;
+            lives = 3;
+
+            foods.clear();
+            energizers.clear();
+
+            for(int x = 70; x <= 825; x += 30) {
+                for(int y = 105; y <= 1000; y += 30) {
+                    if(y < 360 || y > 690) {
+                        if(isGreyTile(x, y)) foods.add(new Point(x, y));
+                    } else {
+                        if(x == 220 || x == 670) foods.add(new Point(x, y));
+                    }
+                }
+            }
+
+            energizers.add(new Point(60, 180));
+            energizers.add(new Point(60, 785));
+            energizers.add(new Point(815, 180));
+            energizers.add(new Point(815, 785));
+        }
 
         if(gameState == 0) {
             if(pressedKeys[KeyEvent.VK_SPACE]) gameState = 1;
